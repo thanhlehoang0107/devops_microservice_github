@@ -120,5 +120,23 @@ Client chỉ cần giao tiếp với Python service (Gateway).
 ### 3. Next Steps
 Bài tiếp theo, chúng ta sẽ đưa cái đống container này lên **Kubernetes** để quản lý cho "xịn" (tự động restart, scale, load balance).
 
+
 ---
-*(Hết bài 3 - Tiếp theo: Kubernetes Basics)*
+
+## 📌 Bài 4: Kubernetes Basics
+
+### 1. Manifest Files
+Mình đã thêm thư mục `k8s/` chứa các file định nghĩa hạ tầng:
+- `go-deployment.yaml`: Chạy 2 pod Backend.
+- `python-deployment.yaml`: Chạy 1 pod Gateway, expose qua NodePort 30001.
+
+### 2. Service Discovery trong K8s
+Khác với Docker Compose dùng tên service trong config, K8s dùng đối tượng `Service`.
+Khi mình tạo `kind: Service` tên là `go-service`, K8s sẽ tạo một DNS record nội bộ.
+=> Code Python gọi `http://go-service:8080` vẫn hoạt động bình thường mà không cần sửa dòng code nào! Đây là vẻ đẹp của sự nhất quán giữa các môi trường.
+
+### 3. CI/CD Update
+Trên GitHub Actions, mình chưa setup cụm K8s thật để deploy. Nhưng mình có thể thêm bước "Linting" (kiểm tra cú pháp) cho các file YAML để tránh lỗi ngớ ngẩn.
+
+---
+*(Hết bài 4 - Tiếp theo: Monitoring)*
