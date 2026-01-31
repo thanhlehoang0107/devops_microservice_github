@@ -3,21 +3,24 @@ version: '3.8'
 services:
   go-service:
     build: ./go-service
+    container_name: go-backend
     ports:
       - "8080:8080"
+    restart: unless-stopped
     networks:
       - microservices-net
 
   python-service:
     build: ./python-service
+    container_name: python-gateway
     ports:
       - "5000:5000"
     environment:
-      # Config cứng IP tạm thời hoặc localhost (lưu ý: localhost trong container là chính nó, không phải host)
-      # Ở bước này ta chỉ cần 2 service UP, chưa bàn kĩ về connect
+      # Quan trọng: Dùng tên service (go-service) làm host name
       GO_SERVICE_URL: http://go-service:8080
     depends_on:
       - go-service
+    restart: unless-stopped
     networks:
       - microservices-net
 

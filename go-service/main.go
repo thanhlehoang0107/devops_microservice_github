@@ -23,8 +23,14 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Endpoint /ping hit")
 }
 
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "OK")
+}
+
 func main() {
 	http.HandleFunc("/ping", pingHandler)
+	http.HandleFunc("/health", healthHandler)
 
 	fmt.Println("Go Service is running on port 8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

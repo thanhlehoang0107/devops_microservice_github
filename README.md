@@ -91,5 +91,17 @@ Ngoài ra, file `docker-compose.yml` giúp mình định nghĩa toàn bộ stack
 ### 3. Note về GitHub Actions
 Hiện tại pipeline vẫn đang test code trần (không qua docker). Ở bài sau mình sẽ cập nhật pipeline để build và push docker image lên GitHub Packages (GHCR).
 
+
 ---
-*(Hết phần 3.1 - Tiếp theo: Kết nối mạng giữa các container)*
+
+## 📌 Bài 3: Docker Integration (Phần 2: Networking & Ping)
+
+### 1. Docker DNS
+GitHub Repo này đã được cập nhật `docker-compose.yml` có cấu hình `networks`.
+Các container giao tiếp qua tên service: `http://go-service:8080`.
+
+### 2. Cập nhật Workflow
+Mình đã thêm job `build_docker` vào GitHub Actions để đảm bảo `Dockerfile` không bị lỗi cú pháp trước khi merge code.
+
+---
+*(Hết phần 3.2 - Tiếp theo: Thêm tính năng Event CRUD)*
