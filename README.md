@@ -72,5 +72,24 @@ Nhưng để đơn giản cho bài này, mình tách làm 2 job:
 ### 4. Bài học rút ra
 Việc cấu hình GitHub Actions (dùng `actions/setup-go`, `actions/setup-python`) cảm giác "thân thiện" hơn việc phải chọn Docker Image bên GitLab một chút, vì mình không cần quan tâm container bên dưới là gì.
 
+
 ---
-*(Hết bài 2 - Tiếp theo sẽ là Docker)*
+
+## 📌 Bài 3: Docker Integration (Phần 1: Container hóa)
+
+### 1. Ý tưởng
+Đẩy code lên GitHub là một chuyện, nhưng người khác pull về có chạy được không? Có cần cài Python 3.9 hay 3.10? Cài Go version nào?
+Giải pháp: **Docker**.
+
+### 2. Implementation
+Mình đã thêm `Dockerfile` vào từng thư mục service.
+- **Go**: Sử dụng Multi-stage build để tối ưu dung lượng image.
+- **Python**: Sử dụng slim image cho nhẹ.
+
+Ngoài ra, file `docker-compose.yml` giúp mình định nghĩa toàn bộ stack. Chỉ cần `docker-compose up` là cả hệ thống backend + frontend (gateway) sẽ chạy lên.
+
+### 3. Note về GitHub Actions
+Hiện tại pipeline vẫn đang test code trần (không qua docker). Ở bài sau mình sẽ cập nhật pipeline để build và push docker image lên GitHub Packages (GHCR).
+
+---
+*(Hết phần 3.1 - Tiếp theo: Kết nối mạng giữa các container)*
