@@ -1,0 +1,36 @@
+name: DevOps Learning Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Print Hello
+        run: |
+          echo "🏗️ Starting Build Job..."
+          echo "System Info:"
+          uname -a
+
+  test_job:
+    needs: build_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mock Test
+        run: |
+          echo "🧪 Running Tests..."
+          echo "Test passed!"
+
+  deploy_job:
+    needs: test_job
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Mock Deploy
+        run: |
+          echo "🚀 Deploying to Production environment..."
