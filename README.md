@@ -103,5 +103,22 @@ Các container giao tiếp qua tên service: `http://go-service:8080`.
 ### 2. Cập nhật Workflow
 Mình đã thêm job `build_docker` vào GitHub Actions để đảm bảo `Dockerfile` không bị lỗi cú pháp trước khi merge code.
 
+
 ---
-*(Hết phần 3.2 - Tiếp theo: Thêm tính năng Event CRUD)*
+
+## 📌 Bài 3: Docker Integration (Phần 3: Full Feature CRUD)
+
+### 1. Tính năng mới
+Repo này giờ đã hoàn thiện tính năng:
+- **Events API**: Cho phép Thêm/Sửa/Xóa events.
+- **In-memory DB**: Go service lưu dữ liệu trong RAM.
+
+### 2. Workflow hoàn chỉnh
+Code Python -> Gọi sang Go.
+Client chỉ cần giao tiếp với Python service (Gateway).
+
+### 3. Next Steps
+Bài tiếp theo, chúng ta sẽ đưa cái đống container này lên **Kubernetes** để quản lý cho "xịn" (tự động restart, scale, load balance).
+
+---
+*(Hết bài 3 - Tiếp theo: Kubernetes Basics)*

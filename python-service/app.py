@@ -1,41 +1,52 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import requests
 import os
 import sys
 
 app = Flask(__name__)
 
-# Lấy URL của Go service từ biến môi trường
 GO_SERVICE_URL = os.environ.get('GO_SERVICE_URL', 'http://localhost:8080')
-print(f"Python Service configuration: GO_SERVICE_URL={GO_SERVICE_URL}", file=sys.stderr)
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Python Service is running 🐍"})
+    return jsonify({"message": "Python Service Gateway 🐍"})
 
 @app.route('/health')
 def health():
     return "OK", 200
 
-@app.route('/call-go')
-def call_go():
+# Proxy endpoint để tạo Event
+@app.route('/events', methods=['POST'])
+def create_event():
     try:
-        # Gọi sang Go service
-        target_url = f"{GO_SERVICE_URL}/ping"
-        print(f"Calling Go service at: {target_url}", file=sys.stderr)
+        data = request.json
+        # Forward request sang Go
+        resp = requests.post(f"{GO_SERVICE_URL}/events", json=data, timeout=3)
         
-        response = requests.get(target_url, timeout=3)
+        if resp.status_code == 201:
+            return jsonify({
+                "status": "success",
+                "message": "Event created via Go",
+                "data": resp.json()
+            }), 201
+        else:
+            return jsonify({"status": "error", "go_error": resp.text}), resp.status_code
+            
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+# Proxy endpoint để lấy Events
+@app.route('/events', methods=['GET'])
+def get_events():
+    try:
+        resp = requests.get(f"{GO_SERVICE_URL}/events", timeout=3)
         return jsonify({
-            "message": "Python gọi Go thành công!",
-            "go_url": target_url,
-            "go_response": response.json()
+            "status": "success",
+            "source": "Go Service",
+            "events": resp.json()
         })
     except Exception as e:
-        return jsonify({
-            "message": "Gọi Go thất bại!",
-            "target": target_url,
-            "error": str(e)
-        }), 500
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
