@@ -47,5 +47,30 @@ jobs:
 - Tab **Actions** trên GitHub đã hiện tick xanh ✅.
 - Mình đã hiểu cách dùng `needs` trong GitHub Actions để tạo dependency giữa các jobs (nếu không có `needs`, chúng sẽ chạy song song mặc định, khác với stage bên GitLab).
 
+
 ---
-*(Hết bài 1 - Chuẩn bị code Python/Go)*
+
+## 📌 Bài 2: Xây dựng Microservices (Python & Go)
+
+### 1. Ý tưởng hệ thống
+Hôm nay mình bắt tay vào coding. Hệ thống gồm 2 services đơn giản:
+- **Go Backend**: Port 8080, xử lý logic nhanh.
+- **Python Gateway**: Port 5000, nhận request từ user và gọi backend.
+
+### 2. Code Implementation
+Mình đã copy code `go-service` và `python-service` vào repo.
+- **Python**: Dùng `requests` để gọi API. Cần xử lý `try-except` để tránh crash nếu Go service chưa bật.
+- **Go**: Dùng `gorilla/mux` hoặc thư viện chuẩn. Ở đây mình dùng thư viện chuẩn cho đơn giản.
+
+### 3. Cập nhật GitHub Actions
+Mình sửa file `.github/workflows/devops-pipeline.yml`. Một điểm hay của GitHub Actions là `matrix strategy`. Mình có thể test code của mình trên nhiều version Python/Go cũng một lúc!
+
+Nhưng để đơn giản cho bài này, mình tách làm 2 job:
+- `test_go`: Setup Go environment -> Test.
+- `test_python`: Setup Python environment -> Install reqs -> Lint.
+
+### 4. Bài học rút ra
+Việc cấu hình GitHub Actions (dùng `actions/setup-go`, `actions/setup-python`) cảm giác "thân thiện" hơn việc phải chọn Docker Image bên GitLab một chút, vì mình không cần quan tâm container bên dưới là gì.
+
+---
+*(Hết bài 2 - Tiếp theo sẽ là Docker)*

@@ -7,27 +7,39 @@ on:
     branches: ["main"]
 
 jobs:
-  build_job:
+  test_go:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Print Hello
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.19"
+      - name: Test Go
         run: |
-          echo "🏗️ Starting Build Job..."
-          echo "System Info:"
-          uname -a
+          cd go-service
+          go mod tidy
+          go test ./...
+          go build -o main .
+          echo "Go build success!"
 
-  test_job:
-    needs: build_job
+  test_python:
     runs-on: ubuntu-latest
     steps:
-      - name: Mock Test
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Test Python
         run: |
-          echo "🧪 Running Tests..."
-          echo "Test passed!"
+          cd python-service
+          pip install -r requirements.txt
+          python -m py_compile app.py
+          echo "Python syntax check success!"
 
   deploy_job:
-    needs: test_job
+    needs: [test_go, test_python]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
